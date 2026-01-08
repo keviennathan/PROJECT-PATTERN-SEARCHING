@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Deteksi Plagiarisme | Pattern Searching</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #eef1f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            height: 130px;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #0069d9;
+            color: #fff;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0053ad;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 6px solid #0069d9;
+            font-size: 15px;
+        }
+
+        .warning {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Deteksi Plagiarisme</h1>
+    <div class="subtitle">
+        Metode Pattern Searching (Brute Force Algorithm)
+    </div>
+
+    <label for="text">Teks Dokumen</label>
+    <textarea id="text" placeholder="Masukkan teks dokumen yang akan dianalisis..."></textarea>
+
+    <label for="pattern">Pola / Kalimat Pembanding</label>
+    <textarea id="pattern" placeholder="Masukkan kalimat yang ingin dicek kesamaannya..."></textarea>
+
+    <button onclick="checkPlagiarism()">Analisis Plagiarisme</button>
+
+    <div class="result" id="result">
+        Hasil analisis akan ditampilkan di sini.
+    </div>
+
+    <footer>
+        © 2026 | Sistem Deteksi Plagiarisme Sederhana – Informatika
+    </footer>
+</div>
+
+<script>
+function patternSearch(text, pattern) {
+    let positions = [];
+    text = text.toLowerCase();
+    pattern = pattern.toLowerCase();
+
+    let n = text.length;
+    let m = pattern.length;
+
+    for (let i = 0; i <= n - m; i++) {
+        let j;
+        for (j = 0; j < m; j++) {
+            if (text[i + j] !== pattern[j]) {
+                break;
+            }
+        }
+        if (j === m) {
+            positions.push(i);
+        }
+    }
+    return positions;
+}
+
+function checkPlagiarism() {
+    let text = document.getElementById("text").value.trim();
+    let pattern = document.getElementById("pattern").value.trim();
+    let resultDiv = document.getElementById("result");
+
+    if (text === "" || pattern === "") {
+        resultDiv.innerHTML = "<span class='warning'>⚠️ Teks dokumen dan pola tidak boleh kosong.</span>";
+        return;
+    }
+
+    let matches = patternSearch(text, pattern);
+    let similarity = ((pattern.length / text.length) * 100).toFixed(2);
+
+    if (matches.length > 0) {
+        resultDiv.innerHTML = `
+            <span class="warning">⚠️ Terindikasi Plagiarisme</span><br><br>
+            Kalimat yang diuji ditemukan pada dokumen.<br>
+            <b>Posisi indeks:</b> ${matches.join(", ")}<br>
+            <b>Estimasi tingkat kemiripan:</b> ${similarity}%
+        `;
+    } else {
+        resultDiv.innerHTML = `
+            <span class="success">✅ Tidak Terindikasi Plagiarisme</span><br><br>
+            Tidak ditemukan kesamaan teks secara langsung.<br>
+            <b>Estimasi tingkat kemiripan:</b> 0%
+        `;
+    }
+}
+</script>
+
+</body>
+</html>
+
